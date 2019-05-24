@@ -3,6 +3,7 @@
 'use strict';
 
 const path = require('path');
+const url = require('url');
 
 const changed = require('gulp-changed');
 const commander = require('commander');
@@ -10,6 +11,7 @@ const debounce = require('lodash.debounce');
 const gulp = require('gulp');
 const gulpIf = require('gulp-if');
 const gulpUtil = require('gulp-util');
+const mustache = require('gulp-mustache');
 const postcss = require('gulp-postcss');
 const postcssURL = require('postcss-url');
 const replace = require('gulp-replace');
@@ -259,6 +261,28 @@ gulp.task(
   })
 );
 
+gulp.task('build-html', () => {
+  const clientIdRequiredMsg =
+    'You must configure an OAuth client ID with the "OAUTH_CLIENT_ID" env var';
+  const apiUrl = process.env.API_URL || 'https://hypothes.is/api/';
+  const config = {
+    apiUrl,
+    authDomain: url.parse(apiUrl).hostname,
+
+    oauthClientId: process.env.OAUTH_CLIENT_ID || clientIdRequiredMsg,
+  };
+  const htmlSafeJsonConfig = JSON.stringify(config).replace(/</g, '\\u003c');
+  return gulp
+    .src('src/sidebar/app.html.mustache')
+    .pipe(
+      mustache({
+        htmlSafeJsonConfig,
+      })
+    )
+    .pipe(rename('app.html'))
+    .pipe(gulp.dest('./build'));
+});
+
 gulp.task('watch-templates', function() {
   gulp.watch(TEMPLATES_DIR + '/*.html', function(file) {
     liveReloadServer.notifyChanged([file.path]);
@@ -329,10 +353,10 @@ function generateBootScript(manifest) {
   let defaultAssetRoot;
 
   if (process.env.NODE_ENV === 'production') {
-    defaultAssetRoot = `https://cdn.hypothes.is/hypothesis/${version}/`;
+    defaultAssetRoot = `https://cdn.hypothes.is/hypothesis/${version}/build/`;
   } else {
     const scheme = useSsl ? 'https' : 'http';
-    defaultAssetRoot = `${scheme}://${packageServerHostname()}:3001/hypothesis/${version}/`;
+    defaultAssetRoot = `${scheme}://${packageServerHostname()}:3001/hypothesis/${version}/build/`;
   }
 
   if (isFirstBuild) {
@@ -399,6 +423,7 @@ const buildAssets = gulp.parallel(
   'build-js',
   'build-css',
   'build-fonts',
+  'build-html',
   'build-images'
 );
 gulp.task('build', gulp.series(buildAssets, generateManifest));
