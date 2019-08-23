@@ -301,6 +301,13 @@ describe('rootThread', function() {
       // pages, since we show all types of annotations here
       assert.notOk(threadFilterFn);
     });
+
+    it('filter returns false when no annotations are provided', function() {
+      fakeBuildThread.reset();
+      rootThread.thread(fakeStore.state);
+      const threadFilterFn = fakeBuildThread.args[0][1].threadFilterFn;
+      assert.isFalse(threadFilterFn({}));
+    });
   });
 
   describe('when the filter query changes', function() {
