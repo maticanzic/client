@@ -184,6 +184,8 @@ describe('annotation', function() {
           }),
           deleteAnnotation: sandbox.stub(),
           flagAnnotation: sandbox.stub(),
+          upvoteAnnotation: sandbox.stub(),
+          downvoteAnnotation: sandbox.stub(),
         };
 
         fakeStore = {
@@ -892,6 +894,134 @@ describe('annotation', function() {
         assert.isFalse(controller.isOrphan());
       });
     });
+
+    describe('#upvote()', function() {
+      beforeEach(function() {
+        fakeAnnotationMapper.upvoteAnnotation = sandbox.stub();
+      });
+
+      context('when the user is not logged in', function() {
+        beforeEach(function() {
+          delete fakeSession.state.userid;
+        });
+
+        it('flashes an error', function() {
+          createDirective().controller.upvote();
+
+          assert.isTrue(fakeFlash.error.calledOnce);
+          assert.equal('Login to upvote annotations', fakeFlash.error.args[0][1]);
+        });
+
+        it("doesn't try to upvote the annotation", function() {
+          createDirective().controller.upvote();
+
+          assert.isFalse(fakeAnnotationMapper.upvoteAnnotation.called);
+        });
+      });
+
+      context('when the user is logged in', function() {
+        it('calls annotationMapper.upvote() when an annotation is upvoted', function(done) {
+          const parts = createDirective();
+          fakeAnnotationMapper.upvoteAnnotation.returns($q.resolve());
+          parts.controller.upvote();
+          assert.calledWith(
+            fakeAnnotationMapper.upvoteAnnotation,
+            parts.annotation
+          );
+          done();
+        });
+
+        it('flashes an error if the upvote fails', function(done) {
+          const controller = createDirective().controller;
+          const err = new Error('500 Server error');
+          fakeAnnotationMapper.upvoteAnnotation.returns(Promise.reject(err));
+          controller.upvote();
+          setTimeout(function() {
+            assert.calledWith(
+              fakeFlash.error,
+              '500 Server error',
+              'Upvoting annotation failed'
+            );
+            done();
+          }, 0);
+        });
+
+        it("doesn't flash an error if the upvote succeeds", function(done) {
+          const controller = createDirective().controller;
+          fakeAnnotationMapper.upvoteAnnotation.returns($q.resolve());
+          controller.upvote();
+          setTimeout(function() {
+            assert.notCalled(fakeFlash.error);
+            done();
+          }, 0);
+        });
+      });
+    });
+
+
+    describe('#downvote()', function() {
+      beforeEach(function() {
+        fakeAnnotationMapper.downvoteAnnotation = sandbox.stub();
+      });
+
+      context('when the user is not logged in', function() {
+        beforeEach(function() {
+          delete fakeSession.state.userid;
+        });
+
+        it('flashes an error', function() {
+          createDirective().controller.downvote();
+
+          assert.isTrue(fakeFlash.error.calledOnce);
+          assert.equal('Login to downvote annotations', fakeFlash.error.args[0][1]);
+        });
+
+        it("doesn't try to downvote the annotation", function() {
+          createDirective().controller.downvote();
+
+          assert.isFalse(fakeAnnotationMapper.downvoteAnnotation.called);
+        });
+      });
+
+      context('when the user is logged in', function() {
+        it('calls annotationMapper.downvote() when an annotation is downvoted', function(done) {
+          const parts = createDirective();
+          fakeAnnotationMapper.downvoteAnnotation.returns($q.resolve());
+          parts.controller.downvote();
+          assert.calledWith(
+            fakeAnnotationMapper.downvoteAnnotation,
+            parts.annotation
+          );
+          done();
+        });
+
+        it('flashes an error if the downvote fails', function(done) {
+          const controller = createDirective().controller;
+          const err = new Error('500 Server error');
+          fakeAnnotationMapper.downvoteAnnotation.returns(Promise.reject(err));
+          controller.downvote();
+          setTimeout(function() {
+            assert.calledWith(
+              fakeFlash.error,
+              '500 Server error',
+              'Downvoting annotation failed'
+            );
+            done();
+          }, 0);
+        });
+
+        it("doesn't flash an error if the downvote succeeds", function(done) {
+          const controller = createDirective().controller;
+          fakeAnnotationMapper.downvoteAnnotation.returns($q.resolve());
+          controller.downvote();
+          setTimeout(function() {
+            assert.notCalled(fakeFlash.error);
+            done();
+          }, 0);
+        });
+      });
+    });
+
 
     describe('#canFlag', function() {
       it('returns false if the user signed in is the same as the author of the annotation', function() {

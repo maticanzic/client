@@ -211,6 +211,30 @@ const update = {
     });
     return { annotations: anns };
   },
+
+  UPVOTE_ANNOTATION: function(state, action) {
+    const anns = state.annotations.map(function(ann) {
+      if (ann.id !== action.id) {
+        return ann;
+      }
+      return Object.assign({}, ann, { 
+        voteResult: ann.voteResult + 1,
+        upvotes: ann.upvotes + 1 });
+    });
+    return { annotations: anns };
+  },
+
+  DOWNVOTE_ANNOTATION: function(state, action) {
+    const anns = state.annotations.map(function(ann) {
+      if (ann.id !== action.id) {
+        return ann;
+      }
+      return Object.assign({}, ann, { 
+        voteResult: ann.voteResult - 1,
+        downvotes: ann.downvotes + 1 });
+    });
+    return { annotations: anns };
+  },
 };
 
 const actions = util.actionTypes(update);
@@ -247,6 +271,9 @@ function addAnnotations(annotations, now) {
         // datetime.
         created: now.toISOString(),
         updated: now.toISOString(),
+        voteResult: 0,
+        upvotes: 0,
+        downvotes: 0,
       },
       annot
     );
@@ -378,6 +405,31 @@ function unhideAnnotation(id) {
 }
 
 /**
+ * Update the vote result of an annotation.
+ *
+ * This updates an annotation to reflect the fact that it has been upvoted.
+ */
+function upvoteAnnotation(id) {
+  return {
+    type: actions.UPVOTE_ANNOTATION,
+    id: id,
+  };
+}
+
+/**
+ * Update the vote result of an annotation.
+ *
+ * This updates an annotation to reflect the fact that it has been downvoted.
+ */
+function downvoteAnnotation(id) {
+  return {
+    type: actions.DOWNVOTE_ANNOTATION,
+    id: id,
+  };
+}
+
+
+/**
  * Return all loaded annotations which have been saved to the server.
  *
  * @param {state} - The global app state
@@ -465,6 +517,8 @@ module.exports = {
     updateAnchorStatus,
     updateFlagStatus,
     unhideAnnotation,
+    upvoteAnnotation,
+    downvoteAnnotation,
   },
 
   selectors: {

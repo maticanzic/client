@@ -200,3 +200,9 @@
 .h-icon-move:before {
   content: "\e902";
 }
+.h-icon-upvote:before {
+  content: "\ea32";
+}
+.h-icon-downvote:before {
+  content: "\ea36";
+}

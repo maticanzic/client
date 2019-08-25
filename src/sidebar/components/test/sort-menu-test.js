@@ -17,7 +17,7 @@ describe('SortMenu', () => {
   beforeEach(() => {
     fakeState = {
       sortKey: 'Location',
-      sortKeysAvailable: ['Newest', 'Oldest', 'Location'],
+      sortKeysAvailable: ['Newest', 'Oldest', 'Location', 'Top', 'Hot', 'Best'],
     };
     fakeStore = {
       setSortKey: sinon.stub(),

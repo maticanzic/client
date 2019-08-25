@@ -67,12 +67,36 @@ function annotationMapper($rootScope, store, api) {
       });
   }
 
+  function upvoteAnnotation(annot) {
+  return api.annotation
+    .upvote({
+      id: annot.id,
+    })
+    .then(function() {
+      $rootScope.$broadcast(events.ANNOTATION_UPVOTED, annot);
+      return annot;
+    });
+  }
+
+  function downvoteAnnotation(annot) {
+  return api.annotation
+    .downvote({
+      id: annot.id,
+    })
+    .then(function() {
+      $rootScope.$broadcast(events.ANNOTATION_DOWNVOTED, annot);
+      return annot;
+    });
+  }
+
   return {
     loadAnnotations: loadAnnotations,
     unloadAnnotations: unloadAnnotations,
     createAnnotation: createAnnotation,
     deleteAnnotation: deleteAnnotation,
     flagAnnotation: flagAnnotation,
+    upvoteAnnotation: upvoteAnnotation,
+    downvoteAnnotation: downvoteAnnotation,
   };
 }
 

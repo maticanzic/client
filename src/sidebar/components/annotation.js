@@ -553,6 +553,10 @@ function AnnotationController(
     return '';
   };
 
+  this.voteResult = function() {
+    return self.annotation.voteResult;
+  }
+
   /**
    * Sets whether or not the controls for expanding/collapsing the body of
    * lengthy annotations should be shown.
@@ -608,6 +612,52 @@ function AnnotationController(
       return false;
     }
     return self.group().type !== 'private';
+  };
+
+    /**
+   * @ngdoc method
+   * @name annotation.AnnotationController#upvote
+   * @description Upvote the annotation.
+   */
+  this.upvote = function() {
+    if (!session.state.userid) {
+      flash.error(
+        'You must be logged in to upvote an annotation.',
+        'Login to upvote annotations'
+      );
+      return;
+    }
+
+    const onRejected = function(err) {
+      flash.error(err.message, 'Upvoting annotation failed');
+    };
+    annotationMapper.upvoteAnnotation(self.annotation).then(function() {
+      analytics.track(analytics.events.ANNOTATION_UPVOTED);
+      store.upvoteAnnotation(self.annotation.id);
+    }, onRejected);
+  };
+
+    /**
+   * @ngdoc method
+   * @name annotation.AnnotationController#downvote
+   * @description Downvote the annotation.
+   */
+  this.downvote = function() {
+    if (!session.state.userid) {
+      flash.error(
+        'You must be logged in to downvote an annotation.',
+        'Login to downvote annotations'
+      );
+      return;
+    }
+
+    const onRejected = function(err) {
+      flash.error(err.message, 'Downvoting annotation failed');
+    };
+    annotationMapper.downvoteAnnotation(self.annotation).then(function() {
+      analytics.track(analytics.events.ANNOTATION_DOWNVOTED);
+      store.downvoteAnnotation(self.annotation.id);
+    }, onRejected);
   };
 }
 

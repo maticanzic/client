@@ -41,12 +41,18 @@ TAB_SORTKEYS_AVAILABLE[uiConstants.TAB_ANNOTATIONS] = [
   'Newest',
   'Oldest',
   'Location',
+  'Top',
+  'Hot',
+  'Best',
 ];
-TAB_SORTKEYS_AVAILABLE[uiConstants.TAB_NOTES] = ['Newest', 'Oldest'];
+TAB_SORTKEYS_AVAILABLE[uiConstants.TAB_NOTES] = ['Newest', 'Oldest', 'Top', 'Hot', 'Best'];
 TAB_SORTKEYS_AVAILABLE[uiConstants.TAB_ORPHANS] = [
   'Newest',
   'Oldest',
   'Location',
+  'Top',
+  'Hot',
+  'Best'
 ];
 
 function initialSelection(settings) {
