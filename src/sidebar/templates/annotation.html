@@ -103,6 +103,23 @@
       Saving...
     </div>
 
+    <div class="annotation-vote-results" ng-if="!vm.isSaving && !vm.editing() && vm.id()">
+      <annotation-action-button
+        id="upvote"
+        icon="'h-icon-upvote'"
+        is-disabled="vm.isDeleted()"
+        label="'Upvote'"
+        on-click="vm.upvote()"
+      ></annotation-action-button>
+      <annotation-action-button
+        id="downvote"
+        icon="'h-icon-downvote'"
+        is-disabled="vm.isDeleted()"
+        label="'Downvote'"
+        on-click="vm.downvote()"
+      ></annotation-action-button>
+      <span class="annotation-vote-results__count">{{ vm.voteResult() }}</span>
+    </div>
     <div class="annotation-actions" ng-if="!vm.isSaving && !vm.editing() && vm.id()">
       <div ng-show="vm.isSaving">Saving…</div>
       <annotation-action-button

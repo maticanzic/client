@@ -227,6 +227,8 @@ function api(apiRoutes, auth, store) {
       flag: apiCall('annotation.flag'),
       hide: apiCall('annotation.hide'),
       unhide: apiCall('annotation.unhide'),
+      upvote: apiCall('annotation.upvote'),
+      downvote: apiCall('annotation.downvote'),
     },
     group: {
       member: {

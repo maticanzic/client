@@ -220,4 +220,53 @@ describe('annotationMapper', function() {
       $rootScope.$apply();
     });
   });
+
+  describe('#upvoteAnnotation()', function() {
+    it('upvotes an annotation', function() {
+      const ann = { id: 'test-id' };
+      annotationMapper.upvoteAnnotation(ann);
+      assert.calledOnce(fakeApi.annotation.upvote);
+      assert.calledWith(fakeApi.annotation.upvote, { id: ann.id });
+    });
+
+    it('emits the "annotationUpvoted" event', function(done) {
+      sandbox.stub($rootScope, '$broadcast');
+      const ann = { id: 'test-id' };
+      annotationMapper
+        .upvoteAnnotation(ann)
+        .then(function() {
+          assert.calledWith(
+            $rootScope.$broadcast,
+            events.ANNOTATION_UPVOTED,
+            ann
+          );
+        })
+        .then(done, done);
+    });
+  });
+
+  describe('#downvoteAnnotation()', function() {
+    it('downvotes an annotation', function() {
+      const ann = { id: 'test-id' };
+      annotationMapper.downvoteAnnotation(ann);
+      assert.calledOnce(fakeApi.annotation.downvote);
+      assert.calledWith(fakeApi.annotation.downvote, { id: ann.id });
+    });
+
+    it('emits the "annotationDownvoted" event', function(done) {
+      sandbox.stub($rootScope, '$broadcast');
+      const ann = { id: 'test-id' };
+      annotationMapper
+        .downvoteAnnotation(ann)
+        .then(function() {
+          assert.calledWith(
+            $rootScope.$broadcast,
+            events.ANNOTATION_DOWNVOTED,
+            ann
+          );
+        })
+        .then(done, done);
+    });
+  });
+
 });

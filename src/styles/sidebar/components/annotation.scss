@@ -136,6 +136,37 @@
 .annotation-replies__count {
   @include font-normal;
   color: $grey-5;
+  margin-left: 4px;
+}
+
+.annotation-vote-results {
+  float: left;
+  margin-top: 0;
+  display: flex;
+
+  .annotation-action-btn {
+    font-weight: normal;
+    padding: 0;
+    margin: 0px 0px 0px 4px;
+
+    &[disabled] {
+      opacity: 0.2;
+    }
+  }
+}
+
+.h-icon-upvote {
+  color: green;
+}
+
+.h-icon-downvote {
+  color: darkred;
+} 
+
+.annotation-vote-results__count {
+  @include font-normal;
+  color: $grey-5;
+  margin-left: 6px;
 }
 
 .annotation-actions {

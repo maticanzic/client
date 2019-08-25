@@ -8,6 +8,8 @@ const events = {
   ANNOTATION_FLAGGED: 'annotationFlagged',
   ANNOTATION_SHARED: 'annotationShared',
   ANNOTATION_UPDATED: 'annotationUpdated',
+  ANNOTATION_UPVOTED: 'annotationUpvoted',
+  ANNOTATION_DOWNVOTED: 'annotationDownvoted',
   DOCUMENT_SHARED: 'documentShared',
   GROUP_LEAVE: 'groupLeave',
   GROUP_SWITCH: 'groupSwitch',

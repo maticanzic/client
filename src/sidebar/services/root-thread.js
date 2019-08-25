@@ -24,7 +24,73 @@ const sortFns = {
   Location: function(a, b) {
     return metadata.location(a) < metadata.location(b);
   },
+  Top: function(a, b) {
+    return a.voteResult > b.voteResult;
+  },
+  Hot: function(a, b) {
+    return hotSortScore(a) > hotSortScore(b);
+  },
+  Best: function(a, b) {
+    return bestSortScore(a) > bestSortScore(b);
+  },
 };
+
+/**
+* Helper functions for sorting algorithms
+*/
+
+// Hot sort algorithm
+
+function hotSortScore(annotation) {
+  let s = annotation.voteResult;
+  let order = Math.log(Math.max(Math.abs(s), 1)) / Math.LN10;
+  let sign;
+  
+  if (s == 0) {
+    sign = 0;
+  } else if (s < 0) {
+    sign = -1;
+  } else {
+    sign = 1;
+  }
+
+  let seconds = epochTimeDifference(annotation.created) - 1134028003;
+  return (sign * order + seconds / 45000);
+}
+
+// Time delta between the time when annotation is posted and epoch
+
+function epochTimeDifference(date) {
+  let secondsSinceEpoch = Math.floor(new Date().getTime() / 1000);
+  let dateToConvert = new Date(date);
+  let dateToSeconds = dateToConvert.getTime() / 1000;
+
+  return dateToSeconds - secondsSinceEpoch;
+}
+
+// Best sort algorithm
+
+function bestSortScore(annotation) {
+  let numberOfRatings = annotation.upvotes + annotation.downvotes;
+
+  if (numberOfRatings == 0) {
+    return 0;
+  } else {
+    // Standard normal distribution constant
+    const z = 1.281551565545;
+
+    // a share of positive ratings among all votes
+    let positiveShare = annotation.upvotes / numberOfRatings;
+
+    // Wilson score interval equation consists of three parts
+    let upperLeftEquation = positiveShare + 1 / (2 + numberOfRatings) * Math.pow(z, 2);
+    let upperRightEquation = z * Math.sqrt(positiveShare * (1 - positiveShare) / numberOfRatings + Math.pow(z, 2) / (4 * Math.pow(numberOfRatings, 2)));
+    let bottomEquation = 1 + 1 / numberOfRatings * Math.pow(z, 2);
+
+    return (upperLeftEquation - upperRightEquation) / bottomEquation;
+  }
+}
+
 
 /**
  * Root conversation thread for the sidebar and stream.

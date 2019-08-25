@@ -102,6 +102,9 @@ describe('store', function() {
         'Newest',
         'Oldest',
         'Location',
+        'Top',
+        'Hot',
+        'Best',
       ]);
     });
 

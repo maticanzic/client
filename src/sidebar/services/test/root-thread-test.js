@@ -201,18 +201,26 @@ describe('rootThread', function() {
           {
             target: targetWithPos(1),
             updated: 20,
+            upvotes: 10,
+            downvotes: 0,
           },
           {
             target: targetWithPos(100),
             updated: 100,
+            upvotes: 6,
+            downvotes: 4,
           },
           {
             target: targetWithPos(50),
             updated: 50,
+            upvotes: 5,
+            downvotes: 1,
           },
           {
             target: targetWithPos(20),
             updated: 10,
+            upvotes: 7,
+            downvotes: 2,
           },
         ];
 
@@ -234,6 +242,9 @@ describe('rootThread', function() {
         { order: 'Location', expectedOrder: [0, 3, 2, 1] },
         { order: 'Oldest', expectedOrder: [3, 0, 2, 1] },
         { order: 'Newest', expectedOrder: [1, 2, 0, 3] },
+        { order: 'Top', expectedOrder: [0, 3, 2, 1] },
+        { order: 'Hot', expectedOrder: [0, 3, 2, 1] },
+        { order: 'Best', expectedOrder: [0, 2, 3, 1] },
       ]
     );
   });
