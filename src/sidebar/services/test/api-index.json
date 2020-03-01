@@ -93,6 +93,11 @@
         "url": "https://example.com/api/annotations/:id/downvote",
         "method": "PUT",
         "desc": "Downvote an annotation."
+      },
+      "mark": {
+        "url": "https://example.com/api/annotations/:id/mark",
+        "method": "PUT",
+        "desc": "Mark an annotation."
       }
     }
   }

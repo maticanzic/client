@@ -10,6 +10,7 @@ const events = {
   ANNOTATION_UPDATED: 'annotationUpdated',
   ANNOTATION_UPVOTED: 'annotationUpvoted',
   ANNOTATION_DOWNVOTED: 'annotationDownvoted',
+  ANNOTATION_MARKED: 'annotationMarked',
   DOCUMENT_SHARED: 'documentShared',
   GROUP_LEAVE: 'groupLeave',
   GROUP_SWITCH: 'groupSwitch',

@@ -229,6 +229,7 @@ function api(apiRoutes, auth, store) {
       unhide: apiCall('annotation.unhide'),
       upvote: apiCall('annotation.upvote'),
       downvote: apiCall('annotation.downvote'),
+      mark: apiCall('annotation.mark'),
     },
     group: {
       member: {

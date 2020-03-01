@@ -89,6 +89,17 @@ function annotationMapper($rootScope, store, api) {
     });
   }
 
+  function markAnnotation(annot) {
+  return api.annotation
+    .mark({
+      id: annot.id,
+    })
+    .then(function() {
+      $rootScope.$broadcast(events.ANNOTATION_MARKED, annot);
+      return annot;
+    });
+  }
+
   return {
     loadAnnotations: loadAnnotations,
     unloadAnnotations: unloadAnnotations,
@@ -97,6 +108,7 @@ function annotationMapper($rootScope, store, api) {
     flagAnnotation: flagAnnotation,
     upvoteAnnotation: upvoteAnnotation,
     downvoteAnnotation: downvoteAnnotation,
+    markAnnotation: markAnnotation
   };
 }
 

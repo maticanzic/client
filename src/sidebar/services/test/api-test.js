@@ -124,6 +124,16 @@ describe('sidebar.services.api', function() {
     return api.group.member.delete({ pubid: 'an-id', userid: 'me' });
   });
 
+  it('upvotes an annotation', () => {
+    expectCall('put', 'annotations/an-id/upvote', 204);
+    return api.annotation.upvote({ id: 'an-id' });
+  });
+
+  it('downvotes an annotation', () => {
+    expectCall('put', 'annotations/an-id/downvote', 204);
+    return api.annotation.downvote({ id: 'an-id' });
+  });
+
   it('gets a group by provided group id', () => {
     const group = { id: 'group-id', name: 'Group' };
     expectCall('get', 'groups/group-id', 200, group);

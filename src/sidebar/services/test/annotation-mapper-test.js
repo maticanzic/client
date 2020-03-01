@@ -269,4 +269,27 @@ describe('annotationMapper', function() {
     });
   });
 
+    describe('#markAnnotation()', function() {
+    it('marks an annotation', function() {
+      const ann = { id: 'test-id' };
+      annotationMapper.markAnnotation(ann);
+      assert.calledOnce(fakeApi.annotation.mark);
+      assert.calledWith(fakeApi.annotation.mark, { id: ann.id });
+    });
+
+    it('emits the "annotationMarked" event', function(done) {
+      sandbox.stub($rootScope, '$broadcast');
+      const ann = { id: 'test-id' };
+      annotationMapper
+        .markAnnotation(ann)
+        .then(function() {
+          assert.calledWith(
+            $rootScope.$broadcast,
+            events.ANNOTATION_MARKED,
+            ann
+          );
+        })
+        .then(done, done);
+    });
+  });
 });

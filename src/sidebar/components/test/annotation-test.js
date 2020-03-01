@@ -186,6 +186,7 @@ describe('annotation', function() {
           flagAnnotation: sandbox.stub(),
           upvoteAnnotation: sandbox.stub(),
           downvoteAnnotation: sandbox.stub(),
+          markAnnotation: sandbox.stub(),
         };
 
         fakeStore = {
@@ -1014,6 +1015,69 @@ describe('annotation', function() {
           const controller = createDirective().controller;
           fakeAnnotationMapper.downvoteAnnotation.returns($q.resolve());
           controller.downvote();
+          setTimeout(function() {
+            assert.notCalled(fakeFlash.error);
+            done();
+          }, 0);
+        });
+      });
+    });
+
+    describe('#mark()', function() {
+      beforeEach(function() {
+        fakeAnnotationMapper.markAnnotation = sandbox.stub();
+      });
+
+      context('when the user is not logged in', function() {
+        beforeEach(function() {
+          delete fakeSession.state.userid;
+        });
+
+        it('flashes an error', function() {
+          createDirective().controller.mark();
+
+          assert.isTrue(fakeFlash.error.calledOnce);
+          assert.equal('Login to mark annotations', fakeFlash.error.args[0][1]);
+        });
+
+        it("doesn't try to mark the annotation", function() {
+          createDirective().controller.mark();
+
+          assert.isFalse(fakeAnnotationMapper.markAnnotation.called);
+        });
+      });
+
+      context('when the user is logged in', function() {
+        it('calls annotationMapper.mark() when an annotation is marked', function(done) {
+          const parts = createDirective();
+          fakeAnnotationMapper.markAnnotation.returns($q.resolve());
+          parts.controller.mark();
+          assert.calledWith(
+            fakeAnnotationMapper.markAnnotation,
+            parts.annotation
+          );
+          done();
+        });
+
+        it('flashes an error if the mark fails', function(done) {
+          const controller = createDirective().controller;
+          const err = new Error('500 Server error');
+          fakeAnnotationMapper.markAnnotation.returns(Promise.reject(err));
+          controller.mark();
+          setTimeout(function() {
+            assert.calledWith(
+              fakeFlash.error,
+              '500 Server error',
+              'Marking the annotation failed'
+            );
+            done();
+          }, 0);
+        });
+
+        it("doesn't flash an error if the marking succeeds", function(done) {
+          const controller = createDirective().controller;
+          fakeAnnotationMapper.markAnnotation.returns($q.resolve());
+          controller.mark();
           setTimeout(function() {
             assert.notCalled(fakeFlash.error);
             done();

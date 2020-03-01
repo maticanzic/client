@@ -558,6 +558,13 @@ function AnnotationController(
   }
 
   /**
+  * Returns information, whether the annotation has been marked as no longer relevant
+  */
+  this.getMarkedInfo = function() {
+    return self.annotation.markedByAdmin;
+  }
+
+  /**
    * Sets whether or not the controls for expanding/collapsing the body of
    * lengthy annotations should be shown.
    */
@@ -657,6 +664,29 @@ function AnnotationController(
     annotationMapper.downvoteAnnotation(self.annotation).then(function() {
       analytics.track(analytics.events.ANNOTATION_DOWNVOTED);
       store.downvoteAnnotation(self.annotation.id);
+    }, onRejected);
+  };
+
+    /**
+   * @ngdoc method
+   * @name annotation.AnnotationController#mark
+   * @description Marks the annotation as not longer relevant.
+   */
+  this.mark = function() {
+    if (!session.state.userid) {
+      flash.error(
+        'You must be logged in to mark an annotation.',
+        'Login to mark annotations'
+      );
+      return;
+    }
+
+    const onRejected = function(err) {
+      flash.error(err.message, 'Marking the annotation failed');
+    };
+    annotationMapper.markAnnotation(self.annotation).then(function() {
+      analytics.track(analytics.events.ANNOTATION_MARKED);
+      store.markAnnotation(self.annotation.id);
     }, onRejected);
   };
 }

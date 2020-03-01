@@ -120,6 +120,7 @@
       ></annotation-action-button>
       <span class="annotation-vote-results__count">{{ vm.voteResult() }}</span>
     </div>
+    <div class="annotation-marked" ng-if="vm.getMarkedInfo()">  * Marked by admin as no longer relevant</div>
     <div class="annotation-actions" ng-if="!vm.isSaving && !vm.editing() && vm.id()">
       <div ng-show="vm.isSaving">Saving…</div>
       <annotation-action-button
@@ -149,6 +150,14 @@
          label="'Share'"
          on-click="vm.showShareDialog = true"
         ></annotation-action-button>
+          <annotation-action-button
+        icon="'h-icon-mark'"
+        is-disabled="vm.isDeleted()"
+        label="'Mark as no longer relevant'"
+        ng-show="vm.authorize('admin')"
+        ng-class="{'is-marked' : vm.getMarkedInfo()}"
+        on-click="vm.mark()"
+      ></annotation-action-button>
         <annotation-share-dialog
           group="vm.group()"
           uri="vm.incontextLink()"

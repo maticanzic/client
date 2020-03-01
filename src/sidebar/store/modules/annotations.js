@@ -235,6 +235,17 @@ const update = {
     });
     return { annotations: anns };
   },
+
+  MARK_ANNOTATION: function(state, action) {
+    const anns = state.annotations.map(function(ann) {
+      if (ann.id !== action.id) {
+        return ann;
+      }
+      return Object.assign({}, ann, { 
+        markedByAdmin: ann.markedByAdmin ? false : true });
+    });
+    return { annotations: anns };
+  },
 };
 
 const actions = util.actionTypes(update);
@@ -274,6 +285,7 @@ function addAnnotations(annotations, now) {
         voteResult: 0,
         upvotes: 0,
         downvotes: 0,
+        markedByAdmin: false,
       },
       annot
     );
@@ -428,6 +440,17 @@ function downvoteAnnotation(id) {
   };
 }
 
+/**
+ * Update the marked status of an annotation.
+ *
+ * This updates an annotation to reflect the fact that it has been marked as no longer relevant.
+ */
+function markAnnotation(id) {
+  return {
+    type: actions.MARK_ANNOTATION,
+    id: id,
+  };
+}
 
 /**
  * Return all loaded annotations which have been saved to the server.
@@ -519,6 +542,7 @@ module.exports = {
     unhideAnnotation,
     upvoteAnnotation,
     downvoteAnnotation,
+    markAnnotation,
   },
 
   selectors: {

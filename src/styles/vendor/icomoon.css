@@ -3,6 +3,7 @@
   src: url('../fonts/h.woff') format('woff');
   font-weight: normal;
   font-style: normal;
+  font-display: block;
 }
 
 [class^="h-icon-"], [class*=" h-icon-"] {
@@ -205,4 +206,7 @@
 }
 .h-icon-downvote:before {
   content: "\ea36";
+}
+.h-icon-mark:before {
+  content: "\e91a";
 }
