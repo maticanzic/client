@@ -42,6 +42,8 @@ const sortFns = {
 // Hot sort algorithm
 
 function hotSortScore(annotation) {
+  var t0 = performance.now();
+  
   let s = annotation.voteResult;
   let order = Math.log(Math.max(Math.abs(s), 1)) / Math.LN10;
   let sign;
@@ -55,6 +57,8 @@ function hotSortScore(annotation) {
   }
 
   let seconds = epochTimeDifference(annotation.created) - 1134028003;
+
+  var t1 = performance.now();
   return (sign * order + seconds / 45000);
 }
 
@@ -113,6 +117,7 @@ function RootThread($rootScope, store, searchFilter, viewFilter) {
    *        filter settings etc.)
    */
   function buildRootThread(state) {
+    console.time('SortResult - ' + state.sortKey);
     const sortFn = sortFns[state.sortKey];
     const shouldFilterThread = () => {
       // Is there a search query, or are we in an active (focused) focus mode?
@@ -140,7 +145,7 @@ function RootThread($rootScope, store, searchFilter, viewFilter) {
         return tabs.shouldShowInTab(thread.annotation, state.selectedTab);
       };
     }
-
+    console.timeEnd('SortResult - ' + state.sortKey);
     // Get the currently loaded annotations and the set of inputs which
     // determines what is visible and build the visible thread structure
     return buildThread(state.annotations, {

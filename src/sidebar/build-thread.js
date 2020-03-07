@@ -191,7 +191,6 @@ function sortThread(thread, compareFn, replyCompareFn) {
   const children = thread.children.map(function(child) {
     return sortThread(child, replyCompareFn, replyCompareFn);
   });
-
   return Object.assign({}, thread, {
     children: sort(children, compareFn),
   });
@@ -352,8 +351,10 @@ function buildThread(annotations, opts) {
     thread.children = thread.children.filter(opts.threadFilterFn);
   }
 
+  console.time('Sort');
   // Sort the root thread according to the current search criteria
   thread = sortThread(thread, opts.sortCompareFn, opts.replySortCompareFn);
+  console.timeEnd('Sort');
 
   // Update `replyCount` and `depth` properties
   thread = countRepliesAndDepth(thread, -1);
